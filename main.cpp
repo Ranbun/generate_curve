@@ -1,12 +1,16 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#include <vector>
 
+#include <Vertex.h>
 
 constexpr int WIDGET(){return 800;}
 constexpr int HEIGHT(){return 600;}
 
 GLFWwindow * renderWindow{nullptr};
+std::vector<Vertex> contralPoints;
+
 
 void processInput(GLFWwindow * window);
 void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -45,11 +49,11 @@ int main()
     {
         processInput(renderWindow);
 
-
         {
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
+
 
         glfwSwapBuffers(renderWindow);
         glfwPollEvents();
