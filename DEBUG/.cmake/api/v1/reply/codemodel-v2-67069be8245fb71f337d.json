@@ -1,0 +1,92 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.18"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "work",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-work-Debug-45bdb932a30b6a5c11d4.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.18"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "work"
+				},
+				{
+					"build" : "work/BezierCurve",
+					"jsonFile" : "directory-work.BezierCurve-Debug-4600cbaab8e54124cabf.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.18"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 0,
+					"source" : "work/BezierCurve",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "dosomeWork",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 2,
+					"id" : "bezierCurve::@831f85fc9ed30987b9c3",
+					"jsonFile" : "target-bezierCurve-Debug-4b6cfa44c0e716f84fc8.json",
+					"name" : "bezierCurve",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "E:/Github/generate_curve/DEBUG",
+		"source" : "E:/Github/generate_curve"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

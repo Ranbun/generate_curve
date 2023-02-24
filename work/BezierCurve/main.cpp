@@ -4,6 +4,8 @@
 #include <vector>
 
 #include <Vertex.h>
+#include <FileReader.h>
+#include <Shader.h>
 
 constexpr int WIDGET(){return 800;}
 constexpr int HEIGHT(){return 600;}
@@ -11,6 +13,8 @@ constexpr int HEIGHT(){return 600;}
 GLFWwindow * renderWindow{nullptr};
 std::vector<Vertex> contralPoints;
 
+GLuint VAO{0};
+GLuint VBO{0};
 
 void processInput(GLFWwindow * window);
 void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -45,8 +49,18 @@ int main()
     glfwSetMouseButtonCallback(renderWindow,mouseButtonCallBack);
     glfwSetCursorPosCallback(renderWindow,mouseCurPosCallBack);
 
+//    glGenBuffers(GL_VERTEX_ARRAY,&VBO);
+//    glCreateVertexArrays(1,&VAO);
+    auto vertex   = VertexShader{"./shaders/BezierCurve/vertex.vert"}.getShader();
+    auto fragment = FragmentShader{"./shaders/BezierCurve/fragment.frag"}.getShader();
+
+
+
+
+
     while(!glfwWindowShouldClose(renderWindow))
     {
+
         processInput(renderWindow);
 
         {

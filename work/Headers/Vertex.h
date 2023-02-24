@@ -1,3 +1,6 @@
+#ifndef VERTEX_H
+#define VERTEX_H
+
 #include <array>
 #include <iostream>
 
@@ -41,3 +44,5 @@ struct Vertex
 
     std::array<double, 3> m_position;
 };
+
+#endif 
