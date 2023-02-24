@@ -4,22 +4,22 @@
 #include <vector>
 
 #include <Vertex.h>
-#include <FileReader.h>
 #include <Shader.h>
 
 constexpr int WIDGET(){return 800;}
 constexpr int HEIGHT(){return 600;}
 
 GLFWwindow * renderWindow{nullptr};
-std::vector<Vertex> contralPoints;
+[[maybe_unused]] std::vector<Vertex> controlPoints;
 
-GLuint VAO{0};
-GLuint VBO{0};
+[[maybe_unused]] GLuint VAO{0};
+[[maybe_unused]] GLuint VBO{0};
 
 void processInput(GLFWwindow * window);
-void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
-void mouseButtonCallBack(GLFWwindow* window, int button, int action, int mods);
-void mouseCurPosCallBack(GLFWwindow* window, double xpos, double ypos);
+void KeyCallBack([[maybe_unused]] GLFWwindow* window, [[maybe_unused]] int key, [[maybe_unused]] int scancode,
+                 [[maybe_unused]] int action, [[maybe_unused]] int mods);
+void mouseButtonCallBack(GLFWwindow* window, int button, int action, [[maybe_unused]] int mods);
+void mouseCurPosCallBack(GLFWwindow* window, [[maybe_unused]] double xpos, [[maybe_unused]] double ypos);
 
 int main()
 {
@@ -49,14 +49,23 @@ int main()
     glfwSetMouseButtonCallback(renderWindow,mouseButtonCallBack);
     glfwSetCursorPosCallback(renderWindow,mouseCurPosCallBack);
 
-//    glGenBuffers(GL_VERTEX_ARRAY,&VBO);
-//    glCreateVertexArrays(1,&VAO);
-    auto vertex   = VertexShader{"./shaders/BezierCurve/vertex.vert"}.getShader();
-    auto fragment = FragmentShader{"./shaders/BezierCurve/fragment.frag"}.getShader();
+    auto vertex   = VertexShader{"./shaders/BezierCurve/vertex.vert"};
+    auto fragment = FragmentShader{"./shaders/BezierCurve/fragment.frag"};
+    auto program = ShaderProgram();
+    program.attachShader(vertex);
+    program.attachShader(fragment);
+    program.link();
 
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
+    /// TODO ......
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
     while(!glfwWindowShouldClose(renderWindow))
     {
@@ -69,10 +78,8 @@ int main()
         }
 
         {
-            
+
         }
-
-
 
         glfwSwapBuffers(renderWindow);
         glfwPollEvents();
@@ -92,12 +99,13 @@ void processInput(GLFWwindow * window)
     }
 }
 
-void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
+void KeyCallBack([[maybe_unused]] GLFWwindow* window, [[maybe_unused]] int key, [[maybe_unused]] int scancode,
+                 [[maybe_unused]] int action, [[maybe_unused]] int mods)
 {
 
 }
 
-void mouseButtonCallBack(GLFWwindow* window, int button, int action, int mods)
+void mouseButtonCallBack(GLFWwindow* window, int button, int action, [[maybe_unused]] int mods)
 {
     if(button == GLFW_MOUSE_BUTTON_LEFT)
     {
@@ -110,7 +118,7 @@ void mouseButtonCallBack(GLFWwindow* window, int button, int action, int mods)
     }
 }
 
-void mouseCurPosCallBack(GLFWwindow* window, double xpos, double ypos)
+void mouseCurPosCallBack(GLFWwindow* window, [[maybe_unused]] double xpos, [[maybe_unused]] double ypos)
 {
     if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == 1)
     {

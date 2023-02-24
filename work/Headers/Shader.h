@@ -3,6 +3,7 @@
 
 #include <string>
 #include <glad/glad.h>
+#include <FileReader.h>
 
 class Shader
 {
@@ -15,11 +16,12 @@ public:
         return m_shader;
     }
 
+protected:
     [[maybe_unused]] void compilationMessage()
     {
         if (!m_compilationResult)
-            std::cout<< m_compilationInfo<< std::endl;
-        std::cout<<"compilation shader success!"<<std::endl;
+            std::cerr<< m_compilationInfo<< std::endl;
+        std::cout << "compilation shader success!" << std::endl;
     }
 
 protected:
@@ -92,29 +94,59 @@ public:
     ~FragmentShader() override = default;
 };
 
-
-class ShaderProgram
+class [[maybe_unused]] ShaderProgram
 {
 public:
-    ShaderProgram() = default;
+    ShaderProgram()
+    {
+        m_program = glCreateProgram();
+    }
     virtual ~ShaderProgram() =default;
 
-#if  0
+    [[maybe_unused]] void link()
+    {
+        glLinkProgram(m_program);
 
-// 创建着色器程序对象
-GLuint shaderProgram = glCreateProgram();
+        auto status = 0;
+        glGetProgramiv(m_program,GL_LINK_STATUS,&status);
 
-// 将顶点着色器附加到着色器程序对象上
-glAttachShader(shaderProgram, vertexShader);
+        if(status == GL_FALSE)
+        {
+            GLint logLength{0};
+            glGetProgramiv(m_program,GL_INFO_LOG_LENGTH,&logLength);
+            m_linkInfo.resize(logLength);
+            glGetProgramInfoLog(m_program,logLength,nullptr,m_linkInfo.data());
+        }
+        else
+        {
+            m_linkStatus = true;
+        }
+        linkMessage();
+    }
 
-// 链接着色器程序
-glLinkProgram(shaderProgram);
+    [[maybe_unused]] void attachShader(const Shader& shader) const
+    {
+        glAttachShader(m_program, shader.getShader());
+    }
 
-// 使用着色器程序
-glUseProgram(shaderProgram);
+    [[maybe_unused]] void bind() const
+    {
+        glUseProgram(m_program);
+    }
 
+private:
+    void linkMessage()
+    {
+        if(!m_linkStatus)
+            std::cerr <<m_linkInfo<<std::endl;
+        else
+            std::cout<<"Link Success!"<<std::endl;
+    }
 
-#endif
+protected:
+    GLuint  m_program{0};
+    std::string m_linkInfo;
+    bool m_linkStatus{false};
 };
 
 

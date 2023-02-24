@@ -13,3 +13,6 @@ build
 .cache
 .cache/
 
+cmake-build-debug-visual-studio
+cmake-build-debug-visual-studio/
+
