@@ -4,6 +4,8 @@
 #include <string>
 #include <glad/glad.h>
 #include <FileReader.h>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader
 {
@@ -132,6 +134,12 @@ public:
     [[maybe_unused]] void bind() const
     {
         glUseProgram(m_program);
+    }
+
+    void setMat4x4(const std::string & name, const glm::mat4x4 & mat) const
+    {
+        GLint uniformLoc = glGetUniformLocation(m_program, name.c_str());
+        glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, glm::value_ptr(mat));
     }
 
 private:
