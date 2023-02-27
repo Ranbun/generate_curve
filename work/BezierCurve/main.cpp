@@ -69,21 +69,6 @@ int main()
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-#if  0
-    /// load data
-    vertices.emplace_back(400);
-    vertices.emplace_back(450);
-    vertices.emplace_back(0.0);
-
-    vertices.emplace_back(600);
-    vertices.emplace_back(150);
-    vertices.emplace_back(0.0);
-
-    vertices.emplace_back(200);
-    vertices.emplace_back(150);
-    vertices.emplace_back(0.0);
-#endif 
-
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
 
     /// position
