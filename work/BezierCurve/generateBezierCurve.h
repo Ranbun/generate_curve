@@ -4,32 +4,61 @@
 #include <vector>
 #include <Vertex.h>
 
-class BezierCurveBuilder
+class GeometryBuilder
 {
 public:
-    BezierCurveBuilder() = default;
-    ~BezierCurveBuilder() = default;
+    GeometryBuilder() = default;
+    virtual ~GeometryBuilder() = default;
+    virtual std::vector<Vertex> generate(std::vector<Vertex> &points) {return {};}
+};
+
+class BezierCurveBuilder: public GeometryBuilder
+{
+public:
+    BezierCurveBuilder()
+        : GeometryBuilder()
+        , m_gap(0.01)
+    {
+
+    }
+
+    ~BezierCurveBuilder() override = default ;
 
     /**
-     * @brief Éú³É»æÖÆ±´Èû¶ûÇúÏßµÄÀëÉ¢µã
-     * @param points ´«½øÀ´µÄ¿ØÖÆµã 
-     * @return ÀëÉ¢ºóµÄ½á¹û
+     * @brief ç”Ÿæˆç»˜åˆ¶è´å¡å°”æ›²çº¿çš„ç¦»æ•£ç‚¹
+     * @param points ä¼ è¿›æ¥çš„æ§åˆ¶ç‚¹ 
+     * @return ç¦»æ•£åçš„ç»“æœ
     */
-    std::vector<Vertex> generate(std::vector<Vertex>& points)
+    std::vector<Vertex> generate(std::vector<Vertex>& points) override
     {
-        auto dis = 0.01;
-
         std::vector<Vertex> resPoints;
-
-        for (auto t = 0.0f; t < 1.0; t += dis)
+        for (auto t = 0.0f; t < 1.0;)
         {
-            auto res = generatePoitnts(points, t);  /// ĞÂÉú³ÉµÄÇúÏß»æÖÆµÄÀëÉ¢µã
+            auto res = generatePoints(points, t);  /// æ–°ç”Ÿæˆçš„æ›²çº¿ç»˜åˆ¶çš„ç¦»æ•£ç‚¹
             resPoints.emplace_back(res);
+            t = t + m_gap;
         }
 
         return resPoints;
     }
-    Vertex generatePoitnts(std::vector<Vertex>& points, float t)
+
+    /**
+     * @brief è®¾ç½®é‡‡æ ·çš„é—´éš”
+     * @param sample é‡‡æ ·é—´éš”
+     */
+    [[maybe_unused]] void setSample(const float sample)
+    {
+        m_gap = sample;
+    }
+
+private:
+    /**
+     * @brief é€’å½’è®¡ç®— é‡‡æ ·ç‚¹
+     * @param points å½“å‰é˜¶çš„æ§åˆ¶ç‚¹
+     * @param t æƒé‡
+     * @return çº¿ä¸Šçš„ç‚¹
+     */
+    Vertex generatePoints(std::vector<Vertex>& points, float t)
     {
         if (points.size() == 1)
         {
@@ -48,12 +77,11 @@ public:
             newPoints.emplace_back(newPoint);
         }
 
-        return generatePoitnts(newPoints, t);
+        return generatePoints(newPoints, t);
     }
 
+protected:
+    float m_gap{0.01};
 };
 
-
-
-
-#endif 
+#endif
