@@ -11,7 +11,11 @@ class Shader
 {
 public:
     Shader() = default;
-    virtual ~Shader() = default;
+    virtual ~Shader()
+    {
+        glDeleteShader(m_shader);
+        m_shader = 0;
+    }
 
     [[maybe_unused]] [[nodiscard]] GLuint getShader() const
     {
@@ -103,7 +107,11 @@ public:
     {
         m_program = glCreateProgram();
     }
-    virtual ~ShaderProgram() =default;
+    virtual ~ShaderProgram()
+    {
+        glDeleteProgram(m_program);
+        m_program = 0;
+    }
 
     [[maybe_unused]] void link()
     {
@@ -136,10 +144,11 @@ public:
         glUseProgram(m_program);
     }
 
-    void setMat4x4(const std::string & name, const glm::mat4x4 & mat) const
+    void setMat4x4(const std::string & name, const glm::mat4 & mat) const
     {
-        GLint uniformLoc = glGetUniformLocation(m_program, name.c_str());
-        glUniformMatrix4fv(uniformLoc, 1, GL_FALSE, glm::value_ptr(mat));
+        const auto location = glGetUniformLocation(m_program, name.c_str());
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+
     }
 
 private:
