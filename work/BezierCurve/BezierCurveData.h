@@ -1,6 +1,7 @@
 #ifndef BEZIERCURVEDATA_H
 #define BEZIERCURVEDATA_H
 
+#if  0
 #include <vector>
 #include <Vertex.h>
 #include <glad/glad.h>
@@ -44,6 +45,41 @@ public:
         return m_controlPoints;
     }
 
+    /**
+     * @brief 设置绘制的数据
+     * @param data 下一次即将绘制的数据
+     */
+    void setVertices(const std::vector<float> & data)
+    {
+        m_vertices.insert(m_vertices.end(),data.begin(),data.end());
+    }
+
+    const std::vector<float> & vertices()
+    {
+        return m_vertices;
+    }
+
+    void setVBO(GLuint vbo)
+    {
+        m_VBO = vbo;
+    }
+
+    [[nodiscard]] GLuint VBO() const
+    {
+        return m_VBO;
+    }
+
+    void setVAO(GLuint vao)
+    {
+        m_VAO = vao;
+    }
+
+    [[nodiscard]] GLuint VAO() const
+    {
+        return m_VAO;
+    }
+
+
 protected:
     /**
      * @brief 控制点
@@ -53,19 +89,20 @@ protected:
     /**
      * @brief 顶点数组缓冲
      */
-    [[maybe_unused]] GLuint VAO{0};
+    [[maybe_unused]] GLuint m_VAO{0};
 
     /**
      * @brief 顶点缓冲
      */
-    [[maybe_unused]] GLuint VBO{0};
+    [[maybe_unused]] GLuint m_VBO{0};
 
     /**
      * @brief 绘制的数据
      */
-    std::vector<float> vertices;
+    std::vector<float> m_vertices;
 
 };
 
+#endif
 
 #endif
