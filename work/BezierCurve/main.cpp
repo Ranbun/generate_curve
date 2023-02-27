@@ -9,17 +9,15 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "generateBezierCurve.h"
+#include "BezierCurveData.h"
 
-constexpr int WIDGET(){return 800;}
-constexpr int HEIGHT(){return 600;}
+BezierCurveData g_curveData;
+
+constexpr int WIDGET(){return 1200;}
+constexpr int HEIGHT(){return 1000;}
 
 GLFWwindow * renderWindow{nullptr};
-[[maybe_unused]] std::vector<Vertex> controlPoints;
-
 std::vector<float> vertices;
-
-[[maybe_unused]] GLuint VAO{0};
-[[maybe_unused]] GLuint VBO{0};
 
 void processInput(GLFWwindow * window);
 void KeyCallBack([[maybe_unused]] GLFWwindow* window, [[maybe_unused]] int key, [[maybe_unused]] int scancode,
@@ -63,24 +61,31 @@ int main()
     program.attachShader(*fragment);
     program.link();
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    {
+        GLuint VAO, VBO;
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    /// position
-    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 7 * sizeof (float),nullptr);
-    glEnableVertexAttribArray(0);
+        g_curveData.setVAO(VAO);
+        g_curveData.setVBO(VBO);
 
-    ///color
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+        /// position
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), nullptr);
+        glEnableVertexAttribArray(0);
+
+        ///color
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), reinterpret_cast<void *>(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
 
     glViewport(0,0,WIDGET(),HEIGHT());
 
@@ -93,9 +98,10 @@ int main()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
         program.bind();
-        glBindVertexArray(VAO);
+        auto currentVAO = g_curveData.VAO();
+        glBindVertexArray(currentVAO);
         {
-            glPointSize(2.0f);
+            glPointSize(3.0f);
 
             glm::mat4 model(1.0f);
             glm::mat4 projection(1.0f);
@@ -123,6 +129,9 @@ int main()
         glfwSwapBuffers(renderWindow);
         glfwPollEvents();
     }
+
+    auto VAO = g_curveData.VAO();
+    auto VBO = g_curveData.VBO();
 
     glDeleteVertexArrays(1,&VAO);
     glDeleteBuffers(1,&VBO);
@@ -163,18 +172,19 @@ void mouseButtonCallBack(GLFWwindow* window, int button, int action, [[maybe_unu
             y = HEIGHT() - y;
 
             auto point = Vertex(x,y,0);
-            controlPoints.emplace_back(point);
 
-            vertices.clear();
 
-            auto bezier = BezierCurveBuilder{};
-
+            g_curveData.addControlPoint(point);
+            const auto controlPoints = g_curveData.controlPoints();
             if (controlPoints.size() < 3)
             {
                 return;
             }
 
+            vertices.clear();
+            auto bezier = BezierCurveBuilder{};
             auto res = bezier.generate(controlPoints);
+
             std::array<float, 4> lineColor{0.0,1.0, 0.0, 1.0f};
             std::array<float, 4> CotrolPointColor{1.0,0.0, 0.0, 1.0f};
 
@@ -184,12 +194,14 @@ void mouseButtonCallBack(GLFWwindow* window, int button, int action, [[maybe_unu
                 vertices.insert(vertices.end(), lineColor.begin(), lineColor.end());
             }
 
+
             for (auto Point : controlPoints)
             {
                 vertices.insert(vertices.end(), Point.m_position.begin(), Point.m_position.end());
                 vertices.insert(vertices.end(), CotrolPointColor.begin(), CotrolPointColor.end());
             }
 
+            auto VBO = g_curveData.VBO();
             glBindBuffer(GL_ARRAY_BUFFER,VBO);
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (float),nullptr,GL_DYNAMIC_DRAW);
             glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof (float), vertices.data());

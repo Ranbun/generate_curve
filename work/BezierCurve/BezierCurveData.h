@@ -1,7 +1,6 @@
 #ifndef BEZIERCURVEDATA_H
 #define BEZIERCURVEDATA_H
 
-#if  0
 #include <vector>
 #include <Vertex.h>
 #include <glad/glad.h>
@@ -103,6 +102,6 @@ protected:
 
 };
 
-#endif
+
 
 #endif

@@ -12,7 +12,7 @@ struct Vertex
 
     }
 
-    const double & x()
+    const double x() const
     {
       return m_position[0];
     }
@@ -22,7 +22,7 @@ struct Vertex
       m_position[0] = x;
     }
 
-    const double & y()
+    const double y() const
     {
       return m_position[1];
     }
@@ -32,7 +32,7 @@ struct Vertex
       m_position[1] = y;
     }
 
-    const double & z()
+    const double z()  const
     {
       return m_position[2];
     }

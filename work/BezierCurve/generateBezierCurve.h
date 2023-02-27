@@ -9,7 +9,7 @@ class GeometryBuilder
 public:
     GeometryBuilder() = default;
     virtual ~GeometryBuilder() = default;
-    virtual std::vector<Vertex> generate(std::vector<Vertex> &points) {return {};}
+    virtual std::vector<Vertex> generate(const std::vector<Vertex> &points) {return {};}
 };
 
 class BezierCurveBuilder: public GeometryBuilder
@@ -29,7 +29,7 @@ public:
      * @param points 传进来的控制点 
      * @return 离散后的结果
     */
-    std::vector<Vertex> generate(std::vector<Vertex>& points) override
+    std::vector<Vertex> generate(const std::vector<Vertex>& points) override
     {
         std::vector<Vertex> resPoints;
         for (auto t = 0.0f; t < 1.0;)
@@ -58,7 +58,7 @@ private:
      * @param t 权重
      * @return 线上的点
      */
-    Vertex generatePoints(std::vector<Vertex>& points, float t)
+    Vertex generatePoints(const std::vector<Vertex>& points, float t)
     {
         if (points.size() == 1)
         {
