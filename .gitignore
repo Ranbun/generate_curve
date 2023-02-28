@@ -16,3 +16,6 @@ build
 cmake-build-debug-visual-studio
 cmake-build-debug-visual-studio/
 
+cmake-build-debug-clang/
+cmake-build-debug-clang
+
