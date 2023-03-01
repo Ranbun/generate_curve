@@ -13,11 +13,10 @@
 
 BezierCurveData g_curveData;
 
-constexpr int WIDGET(){return 1200;}
-constexpr int HEIGHT(){return 1000;}
+constexpr int WIDGET(){return 800;}
+constexpr int HEIGHT(){return 600;}
 
 GLFWwindow * renderWindow{nullptr};
-std::vector<float> vertices;
 
 void processInput(GLFWwindow * window);
 void KeyCallBack([[maybe_unused]] GLFWwindow* window, [[maybe_unused]] int key, [[maybe_unused]] int scancode,
@@ -73,6 +72,7 @@ int main()
         g_curveData.setVAO(VAO);
         g_curveData.setVBO(VBO);
 
+        const auto vertices = g_curveData.vertices();
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
 
         /// position
@@ -122,7 +122,8 @@ int main()
             program.setMat4x4("view", view);
             program.setMat4x4("project", projection);
 
-            glDrawArrays(GL_POINTS, 0, vertices.size() / 3);
+            const auto vertices = g_curveData.vertices();
+            glDrawArrays(GL_POINTS, 0, vertices.size() / 7);
             glBindVertexArray(0);
         }
 
@@ -172,8 +173,6 @@ void mouseButtonCallBack(GLFWwindow* window, int button, int action, [[maybe_unu
             y = HEIGHT() - y;
 
             auto point = Vertex(x,y,0);
-
-
             g_curveData.addControlPoint(point);
             const auto controlPoints = g_curveData.controlPoints();
             if (controlPoints.size() < 3)
@@ -181,6 +180,7 @@ void mouseButtonCallBack(GLFWwindow* window, int button, int action, [[maybe_unu
                 return;
             }
 
+            std::vector<float> vertices(0);
             vertices.clear();
             auto bezier = BezierCurveBuilder{};
             auto res = bezier.generate(controlPoints);
@@ -206,6 +206,9 @@ void mouseButtonCallBack(GLFWwindow* window, int button, int action, [[maybe_unu
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof (float),nullptr,GL_DYNAMIC_DRAW);
             glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof (float), vertices.data());
             glBindBuffer(GL_ARRAY_BUFFER,0);
+
+            g_curveData.setVertices(vertices);
+            vertices.clear();
         }
     }
 }
